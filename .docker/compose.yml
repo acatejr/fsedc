@@ -1,0 +1,16 @@
+services:
+
+  pgsql:
+    extends:
+      file: ./pgsql/compose.yml
+      service: postgres
+    env_file:
+      - .env
+
+  adminer:
+    extends:
+      file: ./pgsql/compose.yml
+      service: adminer
+
+volumes:
+  pgdata:
