@@ -13,3 +13,20 @@ http://localhost/rds/archive_mongo/webservice/organizations?format=json
 http://localhost/rds/archive_mongo/webservice/organizations?format=json  
 https://www.fs.usda.gov/rds/archive/webservice/organizations?format=json  
 https://www.fs.usda.gov/rds/archive/webservice/  
+
+
+## Harvest Data  
+
+**Sources**
+* FSGeoData
+* Data.gov
+* Climate Risk Viewer
+
+## Build ChatBot UI Using Streamlit  
+
+- [ ] Check streamlit account  
+- [ ] Setup project between Streamlit and Github  
+- [ ] Basic UI  
+
+## Do the AI Part
+https://www.youtube.com/watch?v=LddgJyDWoUs  
