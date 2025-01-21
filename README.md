@@ -30,3 +30,20 @@ https://www.fs.usda.gov/rds/archive/webservice/
 
 ## Do the AI Part
 https://www.youtube.com/watch?v=LddgJyDWoUs  
+
+`
+from pydantic_ai import Chatbot
+
+# Step 1: Read the text from the file
+with open('path/to/your/textfile.txt', 'r') as file:
+    text = file.read()
+
+# Step 2: Initialize the Pydantic AI chatbot
+chatbot = Chatbot()
+
+# Step 3: Plug the text into the chatbot
+response = chatbot.ask(text)
+
+# Print the response
+print(response)
+`
