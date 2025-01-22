@@ -31,7 +31,7 @@ https://www.fs.usda.gov/rds/archive/webservice/
 ## Do the AI Part
 https://www.youtube.com/watch?v=LddgJyDWoUs  
 
-`
+```
 from pydantic_ai import Chatbot
 
 # Step 1: Read the text from the file
@@ -46,4 +46,4 @@ response = chatbot.ask(text)
 
 # Print the response
 print(response)
-`
+```

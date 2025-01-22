@@ -2,23 +2,27 @@ import requests
 from bs4 import BeautifulSoup
 import arrow
 
+
+def strip_html(html_string):
+    """
+    Strips all HTML tags from a given string.
+
+    Args:
+        html_string (str): The string containing HTML content.
+
+    Returns:
+        str: The string with all HTML tags removed.
+    """
+
+    soup = BeautifulSoup(html_string, 'html.parser')
+    
+    return soup.get_text()
+
+
 class DataDotGov():
 
     def __init__(self):
         pass
-
-    def strip_html(self, html_string):
-        """
-        Strips all HTML tags from a given string.
-
-        Args:
-            html_string (str): The string containing HTML content.
-
-        Returns:
-            str: The string with all HTML tags removed.
-        """
-        soup = BeautifulSoup(html_string, 'html.parser')
-        return soup.get_text()
 
     def extract_metadata(self):  
        
@@ -44,8 +48,8 @@ class DataDotGov():
             resp = requests.get(url)
             if resp.status_code == 200:
                 resp_json = resp.json()
-                title = self.strip_html(resp_json['title'])
-                description = self.strip_html(resp_json['description'])
+                title = strip_html(resp_json['title'])
+                description = strip_html(resp_json['description'])
                 modified = arrow.get(resp_json["modified"])
                 keywords = resp_json["keyword"]
                 print(title, description, keywords)
@@ -58,21 +62,6 @@ class FSGeodataClearningHouse():
         self.edw_base_url = "https://data.fs.usda.gov/geodata/edw/"        
         self.base_url = "https://data.fs.usda.gov/geodata/edw/datasets.php"
         self.metadata_xml_links = []
-
-
-    def strip_html(self, html_string):
-        """
-        Strips all HTML tags from a given string.
-
-        Args:
-            html_string (str): The string containing HTML content.
-
-        Returns:
-            str: The string with all HTML tags removed.
-        """
-        soup = BeautifulSoup(html_string, 'html.parser')
-        return soup.get_text()
-
 
     def get_metadata_xml_links(self, base_url=None):
         """
@@ -109,6 +98,7 @@ class FSGeodataClearningHouse():
 
   
     def extract_metadata(self):
+        assets = []
         
         if self.metadata_xml_links:
             for link in self.metadata_xml_links:
@@ -117,10 +107,16 @@ class FSGeodataClearningHouse():
                 
                 if resp.status_code == 200:
                     soup = BeautifulSoup(resp.content, features="xml")
-                    title = self.strip_html(soup.find("title").get_text())
+                    title = strip_html(soup.find("title").get_text())
                     descr_block = soup.find("descript")
-                    abstract = self.strip_html(descr_block.find("abstract").get_text())
+                    abstract = strip_html(descr_block.find("abstract").get_text())
+                    if abstract and len(abstract) > 0:
+                        asset = {
+                            'description': abstract,
+                        }
+                        assets.append(asset)
 
+        return assets
 
 class ClimateRiskViewer():
 
@@ -133,15 +129,15 @@ class ClimateRiskViewer():
 
 # Example usage
 if __name__ == "__main__":
-    # fs_geodata_clearinghouse = FSGeodataClearningHouse()
-    # fs_geodata_clearinghouse.get_metadata_xml_links()
-    # fs_geodata_clearinghouse.extract_metadata()
+    fs_geodata_clearinghouse = FSGeodataClearningHouse()
+    fs_geodata_clearinghouse.get_metadata_xml_links()
+    fs_geodata_clearinghouse.extract_metadata()
 
     # data_dot_gov = DataDotGov()
     # data_dot_gov.extract_metadata()
 
-    climate_risk_viewer = ClimateRiskViewer()
-    climate_risk_viewer.extract_metadata()
+    # climate_risk_viewer = ClimateRiskViewer()
+    # climate_risk_viewer.extract_metadata()
 
 
 """
