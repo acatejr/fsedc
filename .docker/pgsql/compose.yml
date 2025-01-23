@@ -1,8 +1,9 @@
 services:
 
   postgres:
-    image: postgres:latest
-    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: Dockerfile
     volumes:
       - pgdata:/var/lib/postgresql/data
     ports:
