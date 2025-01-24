@@ -1,10 +1,11 @@
-# from models import User
 from database import SessionLocal, engine, Base
 from main import FSGeodataClearningHouse
 from models import Asset
 
+
 # Create tables
 Base.metadata.create_all(bind=engine)
+
 
 # Seed the database with initial data
 def seed_database():
@@ -16,7 +17,13 @@ def seed_database():
         assets = fsch.extract_metadata()
 
         for asset in assets:
-            session.add(Asset(description=asset['description']))
+            session.add(
+                Asset(
+                    title=asset["title"],
+                    description=asset["description"],
+                    url=asset["url"],
+                )
+            )
             session.commit()
 
         print("Database seeded successfully!")
@@ -24,6 +31,7 @@ def seed_database():
         print("Database already seeded, skipping.")
 
     session.close()
+
 
 # Run the seed function if this file is executed directly
 if __name__ == "__main__":

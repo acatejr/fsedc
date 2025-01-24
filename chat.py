@@ -1,6 +1,7 @@
 import asyncio
 from agent import DatabaseConn, SupportDependencies, support_agent
 
+
 async def test_support_agent():
     deps = SupportDependencies(user_id=102, db=DatabaseConn())
 

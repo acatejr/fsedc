@@ -14,18 +14,16 @@ def strip_html(html_string):
         str: The string with all HTML tags removed.
     """
 
-    soup = BeautifulSoup(html_string, 'html.parser')
-    
+    soup = BeautifulSoup(html_string, "html.parser")
+
     return soup.get_text()
 
 
-class DataDotGov():
-
+class DataDotGov:
     def __init__(self):
         pass
 
-    def extract_metadata(self):  
-       
+    def extract_metadata(self):
         metadata_urls = [
             "https://catalog.data.gov/harvest/object/203bed83-5da3-4a64-b156-ea016f277b07",
             "https://catalog.data.gov/harvest/object/04643a90-e5fd-4602-a8fa-e8195dd16c5e",
@@ -48,18 +46,16 @@ class DataDotGov():
             resp = requests.get(url)
             if resp.status_code == 200:
                 resp_json = resp.json()
-                title = strip_html(resp_json['title'])
-                description = strip_html(resp_json['description'])
+                title = strip_html(resp_json["title"])
+                description = strip_html(resp_json["description"])
                 modified = arrow.get(resp_json["modified"])
                 keywords = resp_json["keyword"]
                 print(title, description, keywords)
 
 
-class FSGeodataClearningHouse():
-    
-
+class FSGeodataClearningHouse:
     def __init__(self):
-        self.edw_base_url = "https://data.fs.usda.gov/geodata/edw/"        
+        self.edw_base_url = "https://data.fs.usda.gov/geodata/edw/"
         self.base_url = "https://data.fs.usda.gov/geodata/edw/datasets.php"
         self.metadata_xml_links = []
 
@@ -68,7 +64,7 @@ class FSGeodataClearningHouse():
         Retrieves a list of XML metadata file links from the specified base URL.
 
         Args:
-            base_url (str, optional): The base URL to fetch the HTML content from. 
+            base_url (str, optional): The base URL to fetch the HTML content from.
                                       If not provided, the instance's base_url attribute is used.
 
         Returns:
@@ -87,45 +83,42 @@ class FSGeodataClearningHouse():
         response.raise_for_status()  # TODO: Raise an exception for HTTP errors
 
         # Parse the HTML content using BeautifulSoup
-        soup = BeautifulSoup(response.content, 'html.parser')
+        soup = BeautifulSoup(response.content, "html.parser")
 
         # Find all links that point to XML metadata files
         xml_links = []
-        for link in soup.find_all('a', href=True):
-            href = link['href']
-            if href.endswith('.xml'):
+        for link in soup.find_all("a", href=True):
+            href = link["href"]
+            if href.endswith(".xml"):
                 self.metadata_xml_links.append(href)
 
-  
     def extract_metadata(self):
         assets = []
-        
+
         if self.metadata_xml_links:
             for link in self.metadata_xml_links:
                 url = f"{self.edw_base_url}{link}"
                 resp = requests.get(url)
-                
+
                 if resp.status_code == 200:
                     soup = BeautifulSoup(resp.content, features="xml")
                     title = strip_html(soup.find("title").get_text())
                     descr_block = soup.find("descript")
                     abstract = strip_html(descr_block.find("abstract").get_text())
                     if abstract and len(abstract) > 0:
-                        asset = {
-                            'description': abstract,
-                        }
+                        asset = {"title": title, "description": abstract, "url": url}
                         assets.append(asset)
 
         return assets
 
-class ClimateRiskViewer():
 
+class ClimateRiskViewer:
     def __init__(self):
         pass
 
-    
     def extract_metadata(self):
         pass
+
 
 # Example usage
 if __name__ == "__main__":

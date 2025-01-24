@@ -47,3 +47,20 @@ response = chatbot.ask(text)
 # Print the response
 print(response)
 ```
+
+SQL:  
+```
+SELECT * FROM fsedc_dev.public.assets;
+
+-- Finding duplicates
+SELECT a.id, a.title, a.description, a.url FROM assets a 
+JOIN (
+	SELECT description
+	FROM fsedc_dev.public.assets
+	GROUP BY description
+	HAVING COUNT(*) > 1
+) y ON y.description = a.description
+ORDER BY a.title, a.description 
+
+-- DROP TABLE fsedc_dev.public.assets;
+```

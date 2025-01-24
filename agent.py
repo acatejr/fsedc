@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+
 @contextmanager
 def get_session():
     session = SessionLocal()
@@ -17,8 +18,8 @@ def get_session():
     finally:
         session.close()
 
-class DatabaseConn:
 
+class DatabaseConn:
     @classmethod
     async def asset_description(cls, *, id: int) -> str | None:
         with get_session() as session:
@@ -27,7 +28,6 @@ class DatabaseConn:
 
     @classmethod
     async def asset_count(cls) -> int:
-
         with get_session() as session:
             sql = text("SELECT COUNT(*) FROM assets")
             record_count = session.execute(sql).scalar()
@@ -62,6 +62,7 @@ support_agent = Agent(
     ),
 )
 
+
 @support_agent.tool
 async def asset_count(ctx: RunContext[SupportDependencies]) -> str:
     """Returns the catalog's asset count."""
@@ -89,6 +90,7 @@ async def asset_count(ctx: RunContext[SupportDependencies]) -> str:
 #     plan = await ctx.deps.db.subscription_plan(id=ctx.deps.user_id)
 #     return f"Your current subscription plan is: {plan}"
 
+
 async def test_support_agent():
     deps = SupportDependencies(asset_id=102, db=DatabaseConn())
 
@@ -106,4 +108,3 @@ if __name__ == "__main__":
     import asyncio
 
     asyncio.run(test_support_agent())
-
