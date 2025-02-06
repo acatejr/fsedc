@@ -7,10 +7,10 @@ services:
     env_file:
       - .env
 
-#   adminer:
-#     extends:
-#       file: ./pgsql/compose.yml
-#       service: adminer
+  adminer:
+    extends:
+      file: ./pgsql/compose.yml
+      service: adminer
 
 volumes:
   pgdata:
