@@ -1,7 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 import arrow
-
+from pathlib import Path
 
 def strip_html(html_string):
     """
@@ -92,7 +92,7 @@ class FSGeodataClearningHouse:
             if href.endswith(".xml"):
                 self.metadata_xml_links.append(href)
 
-    def extract_metadata(self):
+    def extract_metadata_from_urls(self):
         assets = []
 
         if self.metadata_xml_links:
@@ -111,6 +111,33 @@ class FSGeodataClearningHouse:
 
         return assets
 
+    def download_metadata_files(self):
+        for link in self.metadata_xml_links:
+            url = f"{self.edw_base_url}{link}"
+            resp = requests.get(url)
+            if resp.status_code == 200:
+                filename = Path(f"./tmp/fsgeodata/{link.split("/")[-1]}")
+                filename.parent.mkdir(exist_ok=True, parents=True)
+                with open(filename, "wb") as file:
+                    file.write(resp.content)
+
+    def extract_metadata_from_local_xml(self):
+
+        assets = []
+
+        for l in self.metadata_xml_links:
+            filename = f"./tmp/fsgeodata/{l.split('/')[-1]}"
+            with open(filename, "r") as file:
+                content = file.read()
+                soup = BeautifulSoup(content, features="xml")
+                title = strip_html(soup.find("title").get_text())
+                descr_block = soup.find("descript")
+                abstract = strip_html(descr_block.find("abstract").get_text())
+                url = f"{self.edw_base_url}{l}"
+                if abstract and len(abstract) > 0:
+                        asset = {"title": title, "description": abstract, "url": url}
+                        assets.append(asset)
+        return assets
 
 class ClimateRiskViewer:
     def __init__(self):
@@ -124,7 +151,8 @@ class ClimateRiskViewer:
 if __name__ == "__main__":
     fs_geodata_clearinghouse = FSGeodataClearningHouse()
     fs_geodata_clearinghouse.get_metadata_xml_links()
-    fs_geodata_clearinghouse.extract_metadata()
+    # fs_geodata_clearinghouse.download_metadata_files()
+    fs_geodata_clearinghouse.extract_metadata_from_local_xml()
 
     # data_dot_gov = DataDotGov()
     # data_dot_gov.extract_metadata()

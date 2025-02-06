@@ -1,3 +1,4 @@
+tmp/
 catalog.db
 .env
 scratch*
