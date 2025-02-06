@@ -1,0 +1,19 @@
+[project]
+name = "fsedc"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "bs4>=0.0.2",
+    "lxml>=5.3.0",
+    "pydantic>=2.10.6",
+    "requests>=2.32.3",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.4",
+    "pytest-cover>=3.0.0",
+    "pytest-sugar>=1.0.0",
+]
